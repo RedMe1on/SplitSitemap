@@ -1,7 +1,11 @@
-
-
 def get_number_symbol_slice(content: str) -> int:
     return content.find('<url>', len(content) // 2)
+
+
+def add_and_replace_str(content: str, nubmer_sitemap: str) -> str:
+    string_add = content[content.rfind('<sitemap>')-2:content.rfind('</sitemap>') + 10]
+    content = content + string_add
+    return content.replace('sitemap3.xml', f'sitemap{nubmer_sitemap}.xml')
 
 
 if __name__ == "__main__":
@@ -21,3 +25,17 @@ if __name__ == "__main__":
             sitemap = open(f'SplitSitemap/sitemap{i}_2.xml', 'w')
             sitemap.write(sitemap_2)
             sitemap.close()
+    with open('Sitemap/sitemapindex.xml', 'r') as file:
+        content = file.read()
+        content = content[:-15]
+        content = content.replace('sitemap.xml', 'sitemap0_1.xml')
+        content = content.replace('sitemap1.xml', 'sitemap0_2.xml')
+        content = content.replace('sitemap2.xml', 'sitemap1_1.xml')
+        content = content.replace('sitemap3.xml', 'sitemap1_2.xml')
+        content = add_and_replace_str(content, '2_1')
+        content = '\n' + add_and_replace_str(content, '2_2')
+        content = '\n' + add_and_replace_str(content, '3_1')
+        content = '\n' + add_and_replace_str(content, '3_2') + '\n</sitemapindex>'
+        f = open('SplitSitemap/sitemapindex.xml', 'w')
+        f.write(content.strip('\n'))
+        f.close()
